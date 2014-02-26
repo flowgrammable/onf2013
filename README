@@ -1,0 +1,260 @@
+Flowgrammable Open Flow Stack
+-----------------------------
+
+Build System requirements
+-------------------------
+The following software is needed to build the Flowgrammable OpenFlow Stack
+implementation.
+
+- CMake 2.8.10
+- GCC 4.8
+
+The following software is also used in the build and testing of the project,
+but is not required.
+
+- Clang 3.2 (optional)
+- SWIG 2.0 (option)
+- Python 2.7 (optional)
+- Ruby 2.0 (optional)
+- libpcap
+- strace
+- iproute2
+- valgrind (optional)
+
+To setup crosstools
+
+ - autoconf
+ - bison
+ - flex
+ - gperf
+ - patch
+ - libtool
+ - automake
+
+First, download and extract the crosstools-ng sources:
+
+     $ wget http://crosstool-ng.org/hg/crosstool-ng/archive/86a8d1d467c8.tar.bz2
+     $ tar -xvf 86a8d1d467c8.tar.bz2
+     $ cd crosstool-ng-86a8d1d467c8/
+
+Now configure, build and install crosstools-ng:
+
+     $ ./bootstrap
+     $ ./configure
+     $ make
+     $ make install
+
+
+Development Appliance
+---------------------
+The Development appliance is a Linux virtual machine preloaded with all of
+the software necessary to build the Flowgrammable OpenFlow stack, and 
+toolchains for cross-compiling the stack to ARM, etc...
+
+To install the Development Appliance, follow the following steps:
+
+1. Download and install VirtualBox
+
+2. Download our virtual appliance from
+
+  http://www.flowgrammable.com/downloads/appliance.ova
+
+3. Import and start the appliance
+
+4. Login as using --
+    username: root
+    password: openflow
+
+5. Add your development user
+
+    useradd -m <username>
+    passwd <username>
+
+6. Add the new user to the sudoers file
+
+7. Update the arch linux distribution
+
+    pacman -Syu
+
+8. Now you can remote via ssh to the appliance using
+
+    ssh -p 2222 <username>@localhost
+
+
+Development Setup
+-----------------
+In order to build the Flowgrammable OpenFlow stack, you will need to download
+and compile the source code. If you are using the Development Appliance, you
+will not need to download any of the prerequisite software.
+
+Getting the Source Code
+=======================
+Download the Flowgrammable OpenFlow stack from here:
+
+  http://www.flowgrammable.com/downloads/onfc.tgz
+
+Untar the source code. We'll refer to the un-tarred directory as `$FLOG_ROOT`.
+
+Building the Source Code
+========================
+The Flowgrammable OpenFlow Stack is built using CMake, and works best when
+built in a diretory outside the main the source tree, for example
+`$FLOG_ROOT/build`.
+
+    $ cd $FLOG_ROOT
+    $ mkdir build
+    $ cd build
+
+The project must be built using a fully conformant C++11 compiler. GCC-4.8
+is such a compiler. Before configuring the build, we recommend setting
+the `CXX` environment directory to the executable name of a C++11 compiler.
+
+    $ export CXX=g++-4.8
+    $ cmake ..
+
+Once the build has been configured, simply run make to compile the software.
+
+    $ make
+
+Configuring the Build
+=====================
+There are a number of options controlling the project's build settings. These
+can be controlled using the CMake GUI or the Curses interface to CMake (ccmake).
+For example running `ccmake` can be done like this:
+
+    $ cd $FLOG_ROOT/build
+    $ ccmake .
+
+The primary build options are:
+
+- `CMAKE_BUILD_TYPE` -- One of Debug, Release, etc.
+- `CMAKE_INSTALL_PREFIX` -- The root directory for installation
+- `FLOG_BUILD_BINDINGS -- If enabled, build language bindings.
+- `FLOG_BUILD_TESTS` -- If enabled, build unit tests when running `make`.
+- `FLOG_ENABLE_VALGRIND` -- Run unit tests through valgrind (slowly)
+
+Running the Test Suite
+======================
+The test suite can be run through the Makefile by making the `test` target.
+
+    $ make test
+
+Note that if FLOG_ENABLE_VALGRIND is On, the unit tests will be run through
+valgrind. This will take much longer.
+
+Building the Documentation
+==========================
+Documentation is written using Doxygen and can be built by making the 
+`doc` target.
+
+    $ make doc
+
+By default we generate HTML and Latex refernce documentation for the
+project.
+
+Installation
+============
+The software is also installed the Makefile by making the `install` target.
+
+    $ make install
+
+Installation will install the libopenflow library and development headers.
+
+Cross-compiling the Stack
+=========================
+    
+To cross compile the Flowgrammable OpenFlow Stack for non-native platforms
+first, a toolchain for the target platform is needed. Once the toolchain is
+built, then OpenSSL can be built for the target platform. This enables the
+Flowgrammable OpenFlow Stack to be built for the target architecture.
+
+Setting up a Cross Platform Toolchain
+-------------------------------------
+
+It is a good idea to create a separate folder for the ct-ng build process. To
+get a list of what target architectures are supported use the following command:
+
+     $ ct-ng list-samples
+
+Once you have found the appropriate architecture run the following command but
+replace "arm-cortex_a8-linux-gnueabi" with your desired target architecture.
+
+     $ ct-ng arm-cortex_a8-linux-gnueabi
+
+Create /opt/x-tools/ or the folder you want to put the toolchain and change
+owner to your user. 
+
+Next, run the following command set make the listed settings changes:
+
+     $ ct-ng menuconfig
+
+- Under "Path and misc options" mark "Try features marked as EXPERIMENTAL".
+- Change the path to /opt/x-tools/${CT_TARGET} or whatever folder you created
+  for the toolchain.
+- Under "Operating systems" make sure the kernel version is lower than the
+  kernel on the system you are building from.
+- Set the gcc version to 4.8.1.
+- Set the glib version to 2.17.
+- Also under glib mark "Force unwind support"
+- Disable the compilation of gdb 7.4.1 or make sure python is version 2.7 for
+  gdb to compile successfully.
+- Under "Companion tools" make sure everything is checked.
+
+Once these settings are changed you can now start the build using the following
+command (note that the build make take about 40 minutes):
+
+     $ ct-ng build
+
+Cross compiling OpenSSL (A dependency of libflog)
+-------------------------------------------------
+
+First, get OpenSSL source code:
+
+     $ wget http://www.openssl.org/source/openssl-1.0.1e.tar.gz
+     $ tar -xvf openssl-1.0.1e.tar.gz
+     $ cd openssl-1.0.1e
+
+How to build OpenSSL on ARM:
+
+     $ export CC=/opt/x-tools/arm-cortex_a8-linux-gnueabi/bin/arm-cortex_a8-linux-gnueabi-gcc
+     $ export CXX=/opt/x-tools/arm-cortex_a8-linux-gnueabi/bin/arm-cortex_a8-linux-gnueabi-g++
+     $ export AR=/opt/x-tools/arm-cortex_a8-linux-gnueabi/bin/arm-cortex_a8-linux-gnueabi-ar
+     $ export LD=/opt/x-tools/arm-cortex_a8-linux-gnueabi/bin/arm-cortex_a8-linux-gnueabi-ld
+     $ ./config linux-arm static -DL_ENDIAN -Wa,--noexecstack --prefix=/opt/x-tools/arm-cortex_a8-linux-gnueabi/sysroot --openssldir=/opt/x-tools/arm-cortex_a8-linux-gnueabi/sysroot
+     $ USE_ARCH=32 make CC="${CC} -static ${BUILD32}" AR="${AR} $(ARFLAGS) r" $LD="${LD} $(LDFLAGS)" INSTALL_PREFIX=/opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/ INSTALLTOP=/usr/
+     $ patch -p0 < Makefile.patch #copy Makefile.patch into the folder
+     $ make install CC="${CC} -static ${BUILD32}" AR="${AR} $(ARFLAGS) r" $LD="${LD} $(LDFLAGS)" INSTALL_PREFIX=/opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/ INSTALLTOP=/usr/
+
+How to test OpenSSL on ARM:
+
+     $ qemu-arm -cpu cortex-a8  /opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/usr/bin/openssl version
+
+How to build OpenSSL on PPC:
+
+     $ export CC=/opt/x-tools/powerpc-e300c3-linux-gnu/bin/powerpc-e300c3-linux-gnu-gcc
+     $ export CXX=/opt/x-tools/powerpc-e300c3-linux-gnu/bin/powerpc-e300c3-linux-gnu-g++
+     $ export AR=/opt/x-tools/powerpc-e300c3-linux-gnu/bin/powerpc-e300c3-linux-gnu-ar
+     $ export LD=/opt/x-tools/powerpc-e300c3-linux-gnu/bin/powerpc-e300c3-linux-gnu-ld
+     $ ./config linux-ppc static -DL_ENDIAN -Wa,--noexecstack --prefix=/opt/x-tools/powerpc-e300c3-linux-gnu/sysroot --openssldir=/opt/x-tools/powerpc-e300c3-linux-gnu/sysroot
+     $ USE_ARCH=32 make CC="${CC} -static ${BUILD32}" AR="${AR} $(ARFLAGS) r" $LD="${LD} $(LDFLAGS)" INSTALL_PREFIX=/opt/x-tools/powerpc-e300c3-linux-gnu/powerpc-e300c3-linux-gnu/sysroot/ INSTALLTOP=/usr/
+     $ patch -p0 < Makefile.patch #copy Makefile.patch into the folder
+     $ make install CC="${CC} -static ${BUILD32}" AR="${AR} $(ARFLAGS) r" $LD="${LD} $(LDFLAGS)" INSTALL_PREFIX=/opt/x-tools/powerpc-e300c3-linux-gnu/powerpc-e300c3-linux-gnu/sysroot/ INSTALLTOP=/usr/
+
+How to test OpenSSL on PPC:
+
+     $ qemu-ppc -cpu e300c3 /opt/x-tools/powerpc-e300c3-linux-gnu/powerpc-e300c3-linux-gnu/sysroot/usr/bin/openssl version
+
+Cross compiling libflog
+-----------------------
+
+After OpenSSL is compiled a cmake toolchain file is needed. You can find a
+sample in the root directory of the Flowgrammable OpenFlow Stack called
+"cortex-a8.cmake". To build using this file run (the paths need to be
+updated to match the location of the toolchain):
+
+     $ cmake -DCMAKE_CXX_FLAGS='-static' -DOPENSSL_CRYPTO_LIBRARY=/opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/usr/lib/libcrypt.a -DOPENSSL_SSL_LIBRARY=/opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/usr/lib/libssl.a -DOPENSSL_INCLUDE_DIR=/opt/x-tools/arm-cortex_a8-linux-gnueabi/arm-cortex_a8-linux-gnueabi/sysroot/usr/include/ -DCMAKE_TOOLCHAIN_FILE=cortex-a8.cmake ../
+     $ make
+
+If you have qemu installed you can run make test for the cross platform binaries
+assuming you have properly configured the CTEST_EXE_PREFIX in the toolchain
+file. Replace spaces with semicolons.

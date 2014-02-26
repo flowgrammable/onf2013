@@ -1,0 +1,65 @@
+// Copyright (c) 2013 Flowgrammable, LLC.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at:
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an "AS IS"
+// BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+// or implied. See the License for the specific language governing
+// permissions and limitations under the License.
+
+binding :
+  lhs type must match rhs type
+  lhs gets typed the first time it is used
+  visit through -assignee to type check, type is either a list name
+    or a literal type(maybe not, might be tough to do)
+
+assignee :
+  
+address :
+  is of form proto ip|port ip|port
+  the valid protos are either tcp, or tls
+  if tcp, must specify first port, else don't have to
+  if tls, and port not specified, manually add the default
+  ip addresses can be -ipv4 or -ipv6 (no id or fqdn yet)
+  ports can be any unsigned 16bit int
+  if a second addr|port pair is there, must be a listener in a connection
+
+ipv4 :
+  check each digits group is only 3 digits
+  then check that the 3 digit values are less than 256
+  (maybe check that there are no units on the digits?)
+
+ipv6 :
+  check that each group is only 4 digits
+  check that each group is a valid hex number up to 0xffff
+  (once again, maybe check that there are no units...)
+
+network
+  check the ip
+  check the mask, if ipv4, max_mask = 32
+  else max_mask = 128
+
+identifier :
+  anything that is still this type will be a symbol representing a variable
+  
+The types in the language are:
+Base_Type
+  Built_in
+    Int
+    Str
+    Hex
+    Version
+    MSec
+    Addr
+    Conn
+    Ipv4
+    Ipv6
+    Network
+    Time
+  Stage
+  List

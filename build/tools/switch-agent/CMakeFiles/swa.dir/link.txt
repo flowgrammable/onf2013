@@ -1,0 +1,1 @@
+/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/swa.dir/driver.cpp.o  -o swa -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

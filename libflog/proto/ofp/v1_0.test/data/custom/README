@@ -1,0 +1,7 @@
+This folder contains custom packets
+
+Use the following naming convention:
+    testType_packetTypeNumber_index.expectedResult
+
+Example: barrier reply packet that should pass representational test
+         rep_19_00001.pass

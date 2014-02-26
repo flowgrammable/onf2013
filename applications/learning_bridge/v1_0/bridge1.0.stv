@@ -1,0 +1,55 @@
+Copyright (c) 2013 Flowgrammable, LLC.
+ 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at:
+ 
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an "AS IS"
+BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied. See the License for the specific language governing
+permissions and limitations under the License.
+
+OPF 1.0 Learning Bridge
+=======================
+
+Design 1. - controller is not in critical path
+
+  There are only four types of packets the switch will recieve. Either the
+  ingress port and dl_src are known or unknown, and either the dl_dst is
+  known or unknown. 
+
+Switch Behavior
+---------------------------
+1. port / dl_src / dl_dst -> X                    - temporary on activity
+2. *    / *      / dl_dst -> Controller + X       - temporary on activity
+3. port / dl_src / *      -> All                  - temporary on activity
+4. *    / *      / *      -> Controller + All     - permenant
+
+Psuedo Syntax of Flow Mods
+--------------------------
+1. FlowMod(Match(in-port, dl_src, dl_dst), null, Add, age, 0, 0, id, 0, 0,
+           [Output(out-port)]
+          )
+2. FlowMod(Match(*, *, dl_dst), null, Add, age, 0, 0, id, 0, 0,
+           [Output(Controller), Output(out-port)]
+          )
+3. FlowMod(Match(in-port, dl_src, *), null, Add, age, 0, 0, id, 0, 0,
+           [Output(All)]
+          )
+4. FlowMod(Match(all), null, Add, 0, 0, 0, id, 0, 0, 
+           [Output(Controller), Output(All)]
+          )
+
+Controller Behavior
+--------------
+* Hello
+  -install rule 4
+* PktIn(from rule 4) 
+  -install rule 3
+  -install rule 2
+* PktIn(from rule 2)
+  -install rule 1
+  -install rule 3

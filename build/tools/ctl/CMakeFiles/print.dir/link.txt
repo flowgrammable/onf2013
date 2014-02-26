@@ -1,0 +1,1 @@
+/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/print.dir/print.cpp.o  -o print -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

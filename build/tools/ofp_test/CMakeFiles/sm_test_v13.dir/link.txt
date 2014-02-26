@@ -1,0 +1,1 @@
+/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/sm_test_v13.dir/state_machine_test_v13.cpp.o  -o sm_test_v13 -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

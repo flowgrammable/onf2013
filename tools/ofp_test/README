@@ -1,0 +1,5 @@
+
+The ofp_test tool reads binary messages from a file, evaluates a number
+of basic unit tests on that message, and the types implementing the message,
+and writes a copy of the message to an output file.
+

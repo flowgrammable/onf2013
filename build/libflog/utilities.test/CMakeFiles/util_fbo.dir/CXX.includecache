@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../libflog/utilities.hpp
+cassert
+-
+cstdint
+-
+cstring
+-
+numeric
+-
+random
+-
+iostream
+-
+sstream
+-
+type_traits
+-
+
+/home/faculty/asutton/Code/onf/onfc/libflog/utilities.test/fbo.cpp
+cassert
+-
+libflog/utilities.hpp
+-
+
