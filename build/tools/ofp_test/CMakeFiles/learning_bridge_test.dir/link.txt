@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/learning_bridge_test.dir/learning_bridge_interface_test_v10.cpp.o  -o learning_bridge_test -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

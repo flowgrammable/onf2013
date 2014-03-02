@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/ofp_to_string.dir/to_string.cpp.o  -o ofp_to_string -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

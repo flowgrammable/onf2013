@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/buffer_main.dir/test_buffer.cpp.o  -o buffer_main -rdynamic -lpthread -lssl -lcrypto ../libflog.a 

@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8  -fPIC  -std=c++11 -Wall -fPIC -g -g   -shared -Wl,-soname,libApp1.so -o libApp1.so CMakeFiles/App1.dir/App1.cpp.o -lpthread -lssl -lcrypto ../../libflog/libflog.a 

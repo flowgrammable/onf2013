@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8  -fPIC  -std=c++11 -Wall -fPIC -g -g   -shared -Wl,-soname,libbridge_v1_1.so -o libbridge_v1_1.so CMakeFiles/bridge_v1_1.dir/v1_1/bridge.cpp.o -ldl -lpthread -lssl -lcrypto ../../libflog/libflog.a 

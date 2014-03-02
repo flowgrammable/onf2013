@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/ofp_stream.dir/stream.cpp.o  -o ofp_stream -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

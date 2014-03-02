@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/client.dir/client.cpp.o  -o client -rdynamic -lpthread -lssl -lcrypto ../../libflog/libflog.a 

@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8    -std=c++11 -Wall -fPIC -g -g    CMakeFiles/ofp10_message.dir/message.cpp.o  -o ofp10_message -rdynamic -lpthread -lssl -lcrypto ../../../libflog.a 
