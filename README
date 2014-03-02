@@ -109,7 +109,7 @@ The project must be built using a fully conformant C++11 compiler. GCC-4.8
 is such a compiler. Before configuring the build, we recommend setting
 the `CXX` environment directory to the executable name of a C++11 compiler.
 
-    $ export CXX=g++-4.8
+    $ export CXX=g++
     $ cmake ..
 
 Once the build has been configured, simply run make to compile the software.
